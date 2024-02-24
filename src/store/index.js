@@ -1,10 +1,18 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../feature/slices/counterSlice";
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore } from "redux-persist";
+import { persistedReducer } from "./rootReducer";
 
-export const rootReducer = combineReducers({
-  counter: counterReducer,
-});
+const preloadedState = {};
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }),
+  devTools: process.env.NODE_ENV !== "production",
+  preloadedState,
 });
+
+export const persistor = persistStore(store);
